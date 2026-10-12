@@ -1,0 +1,291 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  background-color: #d6ecdf;
+  color: #075b36;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.navbar {
+  height: 60px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background-color: #b2e0c1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.logo {
+  font-size: 34px;
+  color: green;
+}
+
+.logo-me {
+  color: orange;
+}
+
+.search-input {
+  width: min(360px, 40%);
+  padding: 9px;
+  border: 2px solid #20ad3d;
+  background-color: #f0fdf4;
+  outline: none;
+}
+
+.profile-button {
+  width: 40px;
+  height: 40px;
+  border: 2px solid green;
+  border-radius: 50%;
+  background: transparent;
+  color: green;
+  font-size: 25px;
+}
+
+.layout {
+  display: flex;
+  gap: 35px;
+  padding: 35px;
+  min-height: calc(100vh - 60px);
+}
+
+.sidebar {
+  width: 255px;
+  min-width: 220px;
+  padding: 35px 20px;
+  background-color: #f0fdf4;
+  border: 2px solid #91c49a;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar button {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #075b36;
+  text-align: left;
+  font-size: 18px;
+}
+
+.sidebar button:hover {
+  background-color: #d6ecdf;
+}
+
+.sidebar h3 {
+  margin: 25px 14px 15px;
+  font-size: 16px;
+  color: #444;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 15px 0 40px;
+}
+
+.page-heading h2 {
+  font-size: clamp(32px, 4vw, 52px);
+  font-style: italic;
+  color: #17683b;
+}
+
+.new-note-button,
+.save-button {
+  padding: 13px 22px;
+  border: none;
+  border-radius: 9px;
+  background-color: #35b545;
+  color: white;
+}
+
+.new-note-button:hover,
+.save-button:hover {
+  background-color: #218b32;
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
+}
+
+.note-card {
+  min-height: 190px;
+  padding: 22px;
+  border-radius: 14px;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow-wrap: anywhere;
+}
+
+.note-card h3 {
+  margin-bottom: 17px;
+  font-size: 19px;
+}
+
+.note-card p {
+  margin-bottom: 22px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.note-card small {
+  color: #777;
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.note-actions button {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+}
+
+.note-actions .star {
+  color: #16b52e;
+  font-size: 25px;
+}
+
+.note-actions .star.active {
+  color: #16b52e;
+}
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 600px;
+  margin-bottom: 28px;
+  padding: 22px;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.note-form h3 {
+  margin-bottom: 5px;
+}
+
+.note-form input,
+.note-form textarea,
+.note-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #b5cdbb;
+  border-radius: 6px;
+}
+
+.note-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.cancel-button {
+  padding: 12px 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.empty-message {
+  padding: 30px 0;
+  color: #555;
+}
+
+@media (max-width: 1100px) {
+  .notes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .layout {
+    gap: 22px;
+    padding: 22px;
+  }
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    padding: 0 12px;
+    gap: 10px;
+  }
+
+  .logo {
+    font-size: 27px;
+  }
+
+  .layout {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    padding: 15px;
+  }
+
+  .sidebar button {
+    display: inline-block;
+    width: auto;
+    padding: 10px;
+  }
+
+  .sidebar h3 {
+    margin: 10px;
+  }
+
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-heading {
+    margin: 10px 0 25px;
+  }
+
+  .page-heading h2 {
+    font-size: 30px;
+  }
+
+  .new-note-button {
+    padding: 10px;
+  }
+}
