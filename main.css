@@ -63,12 +63,13 @@
     border-right: 2px solid rgb(65, 181, 65);
 }
 .user{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     height:2rem;
-    width: 4rem;
-    flex-shrink: 0;   /* prevents profile from disappearing */
+    width:4rem;
+    flex-shrink:0;
+    position:relative;
 }
 #userlogo{
  font-size: 2rem;
@@ -223,4 +224,64 @@ button{
     cursor: pointer;
 }
 
+/* Profile card */
+.profile-card{
+    display:none;
+    position:absolute;
+    top:45px;
+    right:0;
+    width:230px;
+    padding:18px;
+    background-color:#fff;
+    border:1px solid #d9e8dc;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.15);
+    z-index:1000;
+}
 
+.profile-header{
+    text-align:center;
+}
+
+.profile-icon{
+    font-size:40px;
+    color:#228B22;
+    margin-bottom:8px;
+}
+
+.profile-header h3{
+    margin:8px 0;
+    color:#333;
+}
+
+.profile-header p{
+    margin:5px 0 12px;
+    font-size:13px;
+    color:#666;
+    overflow-wrap:anywhere;
+}
+
+.profile-card hr{
+    border:none;
+    border-top:1px solid #ddd;
+    margin:12px 0;
+}
+
+.profile-option{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    background-color:#f5f5f5;
+    color:#333;
+    cursor:pointer;
+    text-align:left;
+}
+
+.profile-option i{
+    margin-right:8px;
+}
+
+.profile-option:hover{
+    background-color:#e5f3e8;
+}

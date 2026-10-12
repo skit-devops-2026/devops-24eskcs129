@@ -18,9 +18,22 @@
                 </div>
             </div>
             <div class="user">
-                <button class="userbutton">
-                        <i class="fa-regular fa-circle-user" id="userlogo"></i>
+                <button class="userbutton" onclick="toggleProfile()">
+                    <i class="fa-regular fa-circle-user" id="userlogo"></i>
                 </button>
+
+                <div class="profile-card" id="profileCard">
+                    <div class="profile-header">
+                        <i class="fa-solid fa-circle-user profile-icon"></i>
+                        <h3>Gaurang Sharma</h3>
+                        <p>gaurang@gmail.com</p>
+                    </div>
+                    <hr>
+                    <button class="profile-option" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+                    </button>
+                </div>
             </div>
         </div>
     </div>

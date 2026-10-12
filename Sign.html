@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>NoteME - Sign Up</title>
     <link rel="stylesheet" href="Sign.css">
 </head>
 <body>
     <div class="left">
     <div class="signin">
         <h1 class="sign">Sign Up</h1>
-        <h4 style="text-align: center;font-weight:100;">Create your account to get started</h4>
+        <h4 style="text-align: center; font-weight: 100;">Create your account to get started</h4>
         <br>
-        <form class="loginform">
-            <input type="text" placeholder="Enter name">
-            <input type="email" placeholder="Enter E-mail">
-            <input type="password" placeholder="Enter Password">
+        <form class="loginform" onsubmit="return signup()">
+            <input type="text"id="name" placeholder="Enter name" required>
+            <input type="email" id="email" placeholder="Enter E-mail" required>
+            <input type="password" id="password" placeholder="Enter Password" minlength="8" required>
             <button class="signbutton" type="submit">Sign Up</button>
         </form>
-        <h5 style="text-align: center;font-weight: 100;">Already have an account? <a href="login.html">Login here</a></h5>
+        <h5 style="text-align: center; font-weight: 100;">Already have an account?<a href="login.html">Login here</a></h5>
     </div>
+</div>
+<div class="right">
+    <div class="logo">
+        <img src="logo.png" class="photo" alt="NoteME Logo">
     </div>
-    <div class="right">
-        <div class="logo">
-         <img src="logo1.png" class="photo"/>
-        </div>
-         <h1 class="heading">NoteME</h1>
-    </div>
-    <script src="Sign.js"></script>
+    <h1 class="heading">NoteME</h1>
+</div>
+<script src="Sign.js"></script>
 </body>
 </html>
