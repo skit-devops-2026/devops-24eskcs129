@@ -1,0 +1,11 @@
+
+services:
+  noteme:
+    build:
+      context: ./noteme-react
+      dockerfile: Dockerfile
+    image: noteme-app:v1
+    container_name: noteme-container
+    ports:
+      - "3000:80"
+    restart: unless-stopped
