@@ -28,7 +28,9 @@ make run
 
 ## Live URL
 
-Add once M5 is done. Until then, leave as is.
+The NoteME application is deployed and publicly accessible at:
+
+https://noteme-app-vvqc.onrender.com/
 
 ## Health endpoint
 
