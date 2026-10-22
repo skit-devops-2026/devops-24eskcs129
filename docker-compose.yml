@@ -4,11 +4,8 @@ services:
     build:
       context: ./noteme-react
       dockerfile: Dockerfile
-    image: noteme-app:v1
-    container_name: noteme-container
-    ports:
-      - "3000:80"
-    restart: unless-stopped
+    image: gaurang1817/noteme-app:v2
+
 
   nginx-exporter:
     image: nginx/nginx-prometheus-exporter:1.4.2
