@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import Navbar from "./components/Navbar";
 
 function App() {
   const [notes, setNotes] = useState(() => {
@@ -163,14 +164,7 @@ function App() {
 
   return (
     <div className="app">
-      <header className="navbar">
-        <h1 className="logo">
-          <span>Note</span>
-          <span className="logo-me">Me</span>
-        </h1>
-        <input className="search-input" type="search" placeholder="Search Notes" value={search} onChange={(event) => setSearch(event.target.value)}/>
-        <button className="profile-button" title="Profile" onClick={() => alert("Profile feature will be added next.")}>☻</button>
-      </header>
+      <Navbar search={search} setSearch={setSearch} />
       <div className="layout">
         <aside className="sidebar">
           <button onClick={() => setActivePage("Home")}>🏠 Home</button>
