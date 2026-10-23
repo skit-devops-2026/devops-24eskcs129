@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
 
 function App() {
   const [notes, setNotes] = useState(() => {
@@ -166,15 +167,7 @@ function App() {
     <div className="app">
       <Navbar search={search} setSearch={setSearch} />
       <div className="layout">
-        <aside className="sidebar">
-          <button onClick={() => setActivePage("Home")}>🏠 Home</button>
-          <button onClick={() => setActivePage("Important")}>⭐ Important</button>
-          <button onClick={() => setActivePage("Trash")}>🗑️ Trash</button>
-          <h3>Categories</h3>
-          <button onClick={() => setActivePage("Study")}>📚 Study</button>
-          <button onClick={() => setActivePage("Work")}>💼 Work</button>
-          <button onClick={() => setActivePage("Personal")}> 👤 Personal </button>
-        </aside>
+        <Sidebar setActivePage={setActivePage} />
         <main className="main-content">
           <div className="page-heading">
             <h2>{activePage === "Home" ? "Your Notes" : activePage}</h2>
