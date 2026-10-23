@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
-function App() {
+function Dashboard() {
   const [notes, setNotes] = useState(() => {
     try {
       const savedNotes = localStorage.getItem("noteme-notes");
@@ -270,4 +273,15 @@ function App() {
     </div>
   );
 }
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  );
+}
+
 export default App;
