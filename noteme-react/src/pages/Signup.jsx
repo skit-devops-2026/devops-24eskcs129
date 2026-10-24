@@ -7,18 +7,53 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleSignup(event) {
+  async function handleSignup(event) {
     event.preventDefault();
+    setMessage("");
+
     if (!/^[A-Za-z ]+$/.test(name.trim())) {
       setMessage("Please enter a valid name.");
       return;
     }
+
     if (password.length < 8) {
       setMessage("Password must contain at least 8 characters.");
       return;
     }
-    setMessage("Form validated. Backend connection is required to create your account.");
+
+    try {
+      setLoading(true);
+
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message || "Signup failed. Please try again.");
+        return;
+      }
+
+      setMessage("Account created successfully! You can now log in.");
+      setName("");
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      setMessage("Unable to connect to the server. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -30,8 +65,10 @@ function Signup() {
           <input type="text" placeholder="Enter name" value={name} onChange={(event) => setName(event.target.value)} required />
           <input type="email" placeholder="Enter email" value={email} onChange={(event) => setEmail(event.target.value)} required />
           <input type="password" placeholder="Enter password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={8} required />
-          <button type="submit">Sign Up</button>
-          {message && <p className="auth-message">{message}</p>}
+          <button type="submit" disabled={loading}>
+            {loading ? "Creating account..." : "Sign Up"}
+          </button>
+          {message && <p className="auth-message" role="status">{message}</p>}
           <p>Already have an account? <a href="/login">Login here</a></p>
         </form>
       </div>
