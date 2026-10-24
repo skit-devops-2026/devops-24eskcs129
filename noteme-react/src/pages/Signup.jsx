@@ -49,7 +49,7 @@ function Signup() {
       setName("");
       setEmail("");
       setPassword("");
-    } catch (error) {
+    } catch {
       setMessage("Unable to connect to the server. Please try again.");
     } finally {
       setLoading(false);
