@@ -75,16 +75,16 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: #DDF5C4;
+  background-color: rgb(102, 187, 106);
   padding: 30px;
   box-sizing: border-box;
 }
 
 .auth-right img {
-  width: 180px;
-  max-width: 80%;
+  width: 250px;
   height: auto;
   object-fit: contain;
+  display: block;
 }
 
 .auth-right h1 {
