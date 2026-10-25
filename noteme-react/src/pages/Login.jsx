@@ -1,4 +1,6 @@
+
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 
 function Login() {
@@ -6,6 +8,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   async function handleLogin(event) {
     event.preventDefault();
@@ -18,11 +21,13 @@ function Login() {
 
     try {
       setLoading(true);
+
       const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim(), password })
       });
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -32,7 +37,8 @@ function Login() {
 
       localStorage.setItem("noteme-token", data.token);
       localStorage.setItem("noteme-user", JSON.stringify(data.user));
-      setMessage(`Welcome back, ${data.user.name}! Login successful.`);
+
+      navigate("/");
     } catch {
       setMessage("Unable to connect to the server. Please try again.");
     } finally {

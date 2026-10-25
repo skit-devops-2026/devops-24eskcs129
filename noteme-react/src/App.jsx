@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
@@ -5,20 +6,24 @@ import Sidebar from "./components/Sidebar";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function Dashboard() {
   const [notes, setNotes] = useState(() => {
     try {
       const savedNotes = localStorage.getItem("noteme-notes");
-      if (savedNotes !== null) {
+
+      if (savedNotes) {
         const parsedNotes = JSON.parse(savedNotes);
+
         if (Array.isArray(parsedNotes)) {
           return parsedNotes;
         }
       }
     } catch (error) {
-      console.error("Unable to load saved notes:", error);
+      console.log("Error loading notes:", error);
     }
+
     return [
       {
         id: 1,
@@ -66,6 +71,7 @@ function Dashboard() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Study");
+
   useEffect(() => {
     localStorage.setItem("noteme-notes", JSON.stringify(notes));
   }, [notes]);
@@ -77,22 +83,26 @@ function Dashboard() {
     setCategory("Study");
     setShowForm(true);
   }
+
   function saveNote(event) {
     event.preventDefault();
+
     if (!title.trim() || !description.trim()) {
       alert("Please enter both title and description.");
       return;
     }
+
     if (editingId !== null) {
       setNotes((previousNotes) =>
-        previousNotes.map((note) =>
-          note.id === editingId
-            ? { ...note, title, description, category }
-            : note
-        )
+        previousNotes.map((note) => {
+          if (note.id === editingId) {
+            return { ...note, title: title.trim(), description: description.trim(), category };
+          }
+
+          return note;
+        })
       );
-    } 
-    else {
+    } else {
       const newNote = {
         id: Date.now(),
         title: title.trim(),
@@ -106,10 +116,13 @@ function Dashboard() {
         important: false,
         deleted: false,
       };
+
       setNotes((previousNotes) => [newNote, ...previousNotes]);
     }
+
     setShowForm(false);
   }
+
   function editNote(note) {
     setEditingId(note.id);
     setTitle(note.title);
@@ -117,49 +130,69 @@ function Dashboard() {
     setCategory(note.category);
     setShowForm(true);
   }
+
   function toggleImportant(id) {
     setNotes((previousNotes) =>
-      previousNotes.map((note) =>
-        note.id === id
-          ? { ...note, important: !note.important }
-          : note
-      )
+      previousNotes.map((note) => {
+        if (note.id === id) {
+          return { ...note, important: !note.important };
+        }
+
+        return note;
+      })
     );
   }
+
   function deleteNote(id) {
     setNotes((previousNotes) =>
-      previousNotes.map((note) =>
-        note.id === id ? { ...note, deleted: true } : note
-      )
+      previousNotes.map((note) => {
+        if (note.id === id) {
+          return { ...note, deleted: true };
+        }
+
+        return note;
+      })
     );
   }
+
   function restoreNote(id) {
     setNotes((previousNotes) =>
-      previousNotes.map((note) =>
-        note.id === id ? { ...note, deleted: false } : note
-      )
+      previousNotes.map((note) => {
+        if (note.id === id) {
+          return { ...note, deleted: false };
+        }
+
+        return note;
+      })
     );
   }
+
   function permanentlyDelete(id) {
     setNotes((previousNotes) =>
       previousNotes.filter((note) => note.id !== id)
     );
   }
+
   const visibleNotes = notes.filter((note) => {
     if (activePage === "Trash") {
       return note.deleted;
     }
+
     if (note.deleted) {
       return false;
     }
+
     if (activePage === "Important" && !note.important) {
       return false;
     }
-    if (["Study", "Work", "Personal"].includes(activePage)) {
-      if (note.category !== activePage) {
-        return false;
-      }
+
+    if (
+      ["Study", "Work", "Personal"].includes(activePage) &&
+      note.category !== activePage
+    ) {
+      return false;
     }
+
     return (
       note.title.toLowerCase().includes(search.toLowerCase()) ||
       note.description.toLowerCase().includes(search.toLowerCase())
@@ -169,20 +202,25 @@ function Dashboard() {
   return (
     <div className="app">
       <Navbar search={search} setSearch={setSearch} />
+
       <div className="layout">
         <Sidebar setActivePage={setActivePage} />
+
         <main className="main-content">
           <div className="page-heading">
             <h2>{activePage === "Home" ? "Your Notes" : activePage}</h2>
+
             {activePage !== "Trash" && (
               <button className="new-note-button" onClick={openNewNote}>
                 + New Note
               </button>
             )}
           </div>
+
           {showForm && (
             <form className="note-form" onSubmit={saveNote}>
               <h3>{editingId !== null ? "Edit Note" : "Create Note"}</h3>
+
               <input
                 type="text"
                 placeholder="Note title"
@@ -244,7 +282,11 @@ function Dashboard() {
                       <button
                         title="Delete permanently"
                         onClick={() => {
-                          if (window.confirm("Delete this note permanently?")) {
+                          if (
+                            window.confirm(
+                              "Delete this note permanently?"
+                            )
+                          ) {
                             permanentlyDelete(note.id);
                           }
                         }}
@@ -254,10 +296,26 @@ function Dashboard() {
                     </>
                   ) : (
                     <>
-                    <button title="Edit note" onClick={() => editNote(note)}>  ✏️</button>
-                    <button title="Move to Trash" onClick={() => deleteNote(note.id)}>🗑️</button>
-                    <button className={note.important ? "star active" : "star"} title="Toggle Important" onClick={() => toggleImportant(note.id)}>
-                      {note.important ? "★" : "☆"}
+                      <button
+                        title="Edit note"
+                        onClick={() => editNote(note)}
+                      >
+                        ✏️
+                      </button>
+
+                      <button
+                        title="Move to Trash"
+                        onClick={() => deleteNote(note.id)}
+                      >
+                        🗑️
+                      </button>
+
+                      <button
+                        className={note.important ? "star active" : "star"}
+                        title="Toggle Important"
+                        onClick={() => toggleImportant(note.id)}
+                      >
+                        {note.important ? "★" : "☆"}
                       </button>
                     </>
                   )}
@@ -265,6 +323,7 @@ function Dashboard() {
               </article>
             ))}
           </div>
+
           {visibleNotes.length === 0 && (
             <p className="empty-message">No notes found on this page.</p>
           )}
@@ -273,12 +332,17 @@ function Dashboard() {
     </div>
   );
 }
+
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<Dashboard />} />
+      </Route>
+
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
