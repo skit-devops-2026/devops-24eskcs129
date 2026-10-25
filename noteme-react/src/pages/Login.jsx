@@ -54,7 +54,7 @@ function Login() {
         </form>
       </div>
       <div className="auth-right">
-        <img src="/logo1.png" alt="NoteME Logo" />
+        <img src="/noteme-logo.png" alt="NoteME Logo" />
         <h1>NoteME</h1>
       </div>
     </div>
