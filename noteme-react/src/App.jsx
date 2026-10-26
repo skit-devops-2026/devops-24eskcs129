@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
@@ -9,60 +8,9 @@ import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function Dashboard() {
-  const [notes, setNotes] = useState(() => {
-    try {
-      const savedNotes = localStorage.getItem("noteme-notes");
-
-      if (savedNotes) {
-        const parsedNotes = JSON.parse(savedNotes);
-
-        if (Array.isArray(parsedNotes)) {
-          return parsedNotes;
-        }
-      }
-    } catch (error) {
-      console.log("Error loading notes:", error);
-    }
-
-    return [
-      {
-        id: 1,
-        title: "DSA Preparation",
-        description: "Important topics and questions for DSA...",
-        date: "19 Aug 2026",
-        category: "Study",
-        important: false,
-        deleted: false,
-      },
-      {
-        id: 2,
-        title: "Machine Learning",
-        description: "Notes about reinforcement learning...",
-        date: "18 Aug 2026",
-        category: "Study",
-        important: true,
-        deleted: false,
-      },
-      {
-        id: 3,
-        title: "Web Development",
-        description: "HTML, CSS and JavaScript concepts...",
-        date: "17 Aug 2026",
-        category: "Work",
-        important: false,
-        deleted: false,
-      },
-      {
-        id: 4,
-        title: "Travelling",
-        description: "Travelling essentials that are required...",
-        date: "17 Aug 2026",
-        category: "Personal",
-        important: false,
-        deleted: false,
-      },
-    ];
-  });
+  const [notes, setNotes] = useState([]);
+  const [loadingNotes, setLoadingNotes] = useState(true);
+  const [message, setMessage] = useState("");
 
   const [activePage, setActivePage] = useState("Home");
   const [search, setSearch] = useState("");
@@ -73,8 +21,32 @@ function Dashboard() {
   const [category, setCategory] = useState("Study");
 
   useEffect(() => {
-    localStorage.setItem("noteme-notes", JSON.stringify(notes));
-  }, [notes]);
+    async function fetchNotes() {
+      try {
+        const token = localStorage.getItem("noteme-token");
+
+        const response = await fetch("http://localhost:5000/api/notes", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to load notes");
+        }
+
+        setNotes(data);
+      } catch (error) {
+        setMessage(error.message || "Unable to connect to the server.");
+      } finally {
+        setLoadingNotes(false);
+      }
+    }
+
+    fetchNotes();
+  }, []);
 
   function openNewNote() {
     setEditingId(null);
@@ -84,7 +56,7 @@ function Dashboard() {
     setShowForm(true);
   }
 
-  function saveNote(event) {
+  async function saveNote(event) {
     event.preventDefault();
 
     if (!title.trim() || !description.trim()) {
@@ -92,35 +64,50 @@ function Dashboard() {
       return;
     }
 
-    if (editingId !== null) {
-      setNotes((previousNotes) =>
-        previousNotes.map((note) => {
-          if (note.id === editingId) {
-            return { ...note, title: title.trim(), description: description.trim(), category };
-          }
+    try {
+      const token = localStorage.getItem("noteme-token");
+      const isEditing = editingId !== null;
 
-          return note;
-        })
+      const response = await fetch(
+        isEditing
+          ? `http://localhost:5000/api/notes/${editingId}`
+          : "http://localhost:5000/api/notes",
+        {
+          method: isEditing ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            title: title.trim(),
+            description: description.trim(),
+            category
+          })
+        }
       );
-    } else {
-      const newNote = {
-        id: Date.now(),
-        title: title.trim(),
-        description: description.trim(),
-        date: new Date().toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }),
-        category,
-        important: false,
-        deleted: false,
-      };
 
-      setNotes((previousNotes) => [newNote, ...previousNotes]);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to save note");
+      }
+
+      if (isEditing) {
+        setNotes((previousNotes) =>
+          previousNotes.map((note) =>
+            note.id === editingId ? data : note
+          )
+        );
+      } else {
+        setNotes((previousNotes) => [data, ...previousNotes]);
+      }
+
+      setShowForm(false);
+      setEditingId(null);
+      setMessage("");
+    } catch (error) {
+      setMessage(error.message || "Unable to save note.");
     }
-
-    setShowForm(false);
   }
 
   function editNote(note) {
@@ -131,46 +118,72 @@ function Dashboard() {
     setShowForm(true);
   }
 
-  function toggleImportant(id) {
-    setNotes((previousNotes) =>
-      previousNotes.map((note) => {
-        if (note.id === id) {
-          return { ...note, important: !note.important };
-        }
+  async function updateNote(id, changes) {
+    try {
+      const token = localStorage.getItem("noteme-token");
 
-        return note;
-      })
-    );
+      const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(changes)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update note");
+      }
+
+      setNotes((previousNotes) =>
+        previousNotes.map((note) => note.id === id ? data : note)
+      );
+
+      setMessage("");
+    } catch (error) {
+      setMessage(error.message || "Unable to update note.");
+    }
+  }
+
+  function toggleImportant(note) {
+    updateNote(note.id, { important: !note.important });
   }
 
   function deleteNote(id) {
-    setNotes((previousNotes) =>
-      previousNotes.map((note) => {
-        if (note.id === id) {
-          return { ...note, deleted: true };
-        }
-
-        return note;
-      })
-    );
+    updateNote(id, { deleted: true });
   }
 
   function restoreNote(id) {
-    setNotes((previousNotes) =>
-      previousNotes.map((note) => {
-        if (note.id === id) {
-          return { ...note, deleted: false };
-        }
-
-        return note;
-      })
-    );
+    updateNote(id, { deleted: false });
   }
 
-  function permanentlyDelete(id) {
-    setNotes((previousNotes) =>
-      previousNotes.filter((note) => note.id !== id)
-    );
+  async function permanentlyDelete(id) {
+    try {
+      const token = localStorage.getItem("noteme-token");
+
+      const response = await fetch(`http://localhost:5000/api/notes/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to delete note");
+      }
+
+      setNotes((previousNotes) =>
+        previousNotes.filter((note) => note.id !== id)
+      );
+
+      setMessage("");
+    } catch (error) {
+      setMessage(error.message || "Unable to delete note.");
+    }
   }
 
   const visibleNotes = notes.filter((note) => {
@@ -199,6 +212,10 @@ function Dashboard() {
     );
   });
 
+  if (loadingNotes) {
+    return <p>Loading notes...</p>;
+  }
+
   return (
     <div className="app">
       <Navbar search={search} setSearch={setSearch} />
@@ -216,6 +233,12 @@ function Dashboard() {
               </button>
             )}
           </div>
+
+          {message && (
+            <p className="empty-message" role="status">
+              {message}
+            </p>
+          )}
 
           {showForm && (
             <form className="note-form" onSubmit={saveNote}>
@@ -282,11 +305,7 @@ function Dashboard() {
                       <button
                         title="Delete permanently"
                         onClick={() => {
-                          if (
-                            window.confirm(
-                              "Delete this note permanently?"
-                            )
-                          ) {
+                          if (window.confirm("Delete this note permanently?")) {
                             permanentlyDelete(note.id);
                           }
                         }}
@@ -313,7 +332,7 @@ function Dashboard() {
                       <button
                         className={note.important ? "star active" : "star"}
                         title="Toggle Important"
-                        onClick={() => toggleImportant(note.id)}
+                        onClick={() => toggleImportant(note)}
                       >
                         {note.important ? "★" : "☆"}
                       </button>

@@ -231,6 +231,56 @@ button {
   color: #555;
 }
 
+
+.navbar {
+  position: relative;
+}
+
+.profile-button {
+  width: 45px;
+  height: 45px;
+  border: 1px solid #b6d9c0;
+  border-radius: 50%;
+  background: transparent;
+  color: #166534;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.profile-menu {
+  position: absolute;
+  top: 65px;
+  right: 15px;
+  z-index: 1000;
+  width: 280px;
+  padding: 20px;
+  background: white;
+  border: 1px solid #b6d9c0;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  overflow-wrap: anywhere;
+}
+
+.profile-menu h3 {
+  margin-top: 0;
+  color: #166534;
+}
+
+.profile-menu p {
+  margin: 12px 0;
+}
+
+.profile-menu button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #166534;
+  color: white;
+  cursor: pointer;
+}
+
+
 @media (max-width: 1100px) {
   .notes-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
